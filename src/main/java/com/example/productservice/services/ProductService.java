@@ -14,6 +14,7 @@ public interface ProductService {
     Product addNewProduct(ProductDto product);
 
     Product updateProduct(Long productId, ProductDto product);
+    Product replaceProduct(Long productId, ProductDto product);
 
     HttpStatusCode deleteProduct(Long productId);
 }

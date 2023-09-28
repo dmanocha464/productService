@@ -48,6 +48,15 @@ public class ProductController {
     }
 
     @PutMapping("/{productId}")
+    public ResponseEntity<Product> replaceProduct(@PathVariable("productId") Long productId, @RequestBody ProductDto productDto) {
+        ResponseEntity<Product> response = new ResponseEntity(
+                productService.replaceProduct(productId, productDto),
+                HttpStatus.OK
+        );
+        return response;
+    }
+
+    @PatchMapping("/{productId}")
     public ResponseEntity<Product> updateProduct(@PathVariable("productId") Long productId, @RequestBody ProductDto productDto) {
         ResponseEntity<Product> response = new ResponseEntity(
                 productService.updateProduct(productId, productDto),
