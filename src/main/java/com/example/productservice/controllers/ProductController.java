@@ -1,6 +1,8 @@
 package com.example.productservice.controllers;
 
+import com.example.productservice.dtos.ErrorResponseDto;
 import com.example.productservice.dtos.ProductDto;
+import com.example.productservice.exceptions.NotFoundException;
 import com.example.productservice.models.Product;
 import com.example.productservice.services.ProductService;
 import org.springframework.http.HttpStatus;
@@ -9,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/products")
@@ -29,9 +32,14 @@ public class ProductController {
     }
 
     @GetMapping("/{productId}")
-    public ResponseEntity<Product> getSingleProduct(@PathVariable("productId") Long productId) {
+    public ResponseEntity<Product> getSingleProduct(@PathVariable("productId") Long productId) throws NotFoundException {
+
+        Optional<Product> product = productService.getSingleProduct(productId);
+        if(product.isEmpty()) {
+            throw new NotFoundException("No product with id "+productId);
+        }
         ResponseEntity<Product> response = new ResponseEntity(
-                productService.getSingleProduct(productId),
+                product.get(),
                 HttpStatus.OK
         );
         return response;
@@ -70,4 +78,13 @@ public class ProductController {
         HttpStatusCode statusCode = productService.deleteProduct(productId);
         return "Deleted product with status code: " + statusCode;
     }
+
+   /* @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponseDto> HandelNotFoundException(Exception exception) {
+        ErrorResponseDto errorResponseDto = new ErrorResponseDto();
+        errorResponseDto.setErrorMessage(exception.getMessage());
+        return new ResponseEntity<>(errorResponseDto, HttpStatus.NOT_FOUND);
+    }
+
+    */
 }

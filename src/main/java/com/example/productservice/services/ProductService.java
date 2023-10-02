@@ -5,11 +5,12 @@ import com.example.productservice.models.Product;
 import org.springframework.http.HttpStatusCode;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ProductService {
     List<Product> getAllProducts();
 
-    Product getSingleProduct(Long productId);
+    Optional<Product> getSingleProduct(Long productId);
 
     Product addNewProduct(ProductDto product);
 

@@ -20,6 +20,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class FakeStoreProductServiceImpl implements ProductService{
@@ -74,15 +75,17 @@ public class FakeStoreProductServiceImpl implements ProductService{
     }
 
     @Override
-    public Product getSingleProduct(Long productId) {
+    public Optional<Product> getSingleProduct(Long productId) {
         RestTemplate restTemplate = restTemplateBuilder.build();
         ResponseEntity<FakeStoreProductDto> response =  restTemplate.getForEntity(
                 "https://fakestoreapi.com/products/{id}",
                 FakeStoreProductDto.class, productId);
 
         FakeStoreProductDto productDto = response.getBody();
-
-        return convertFakeStoreProductDtoToProduct(productDto);
+        if (productDto == null) {
+            return Optional.empty();
+        }
+        return Optional.of(convertFakeStoreProductDtoToProduct(productDto));
     }
 
     @Override
